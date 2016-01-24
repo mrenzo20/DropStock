@@ -137,4 +137,20 @@ class SiteController extends Controller
             ->getForm()
         ;
     }
+
+   /**
+     * Displays a form to edit an existing Site entity.
+     *
+     * @Route("/{id}/check", name="site_check")
+     * @Method({"GET", "POST"})
+     */
+    public function checkAction(Request $request, Site $site)
+    {
+      $deleteForm = $this->createDeleteForm($site);
+
+        return $this->render('site/show.html.twig', array(
+            'site' => $site,
+            'delete_form' => $deleteForm->createView(),
+        ));
+    }
 }
