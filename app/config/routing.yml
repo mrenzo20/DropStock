@@ -1,0 +1,8 @@
+drop_stock:
+    resource: "@DropStockBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
