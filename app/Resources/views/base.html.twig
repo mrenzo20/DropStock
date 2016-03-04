@@ -14,7 +14,7 @@
     {% endblock %}
 
   </head>
-  <body>
+  {% block body %}
     <div class="container-fluid">
     <nav class="navbar navbar-default">
       <div class="container-fluid">
@@ -79,5 +79,5 @@
     {% javascripts '@jquery' '@bootstrap_js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-  </body>
+{% endblock %}
 </html>
