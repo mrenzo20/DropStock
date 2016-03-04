@@ -150,14 +150,14 @@ class SiteController extends Controller
         $deleteForm = $this->createDeleteForm($site);
         if($site->getUrl()){
           $url = $site->getUrl();
-          var_dump($url);
           $contents = file_get_contents($url);
-          var_dump($contents);
+          $site->json = $contents;
+          $site->json_array = json_decode($site->json);
+          $site->dump = print_r($site->json_array,'true');
         }
 
-        return $this->render('site/show.html.twig', array(
+        return $this->render('site/check.html.twig', array(
             'site' => $site,
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 }
