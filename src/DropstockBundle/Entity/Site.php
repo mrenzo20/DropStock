@@ -3,51 +3,46 @@
 namespace DropstockBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+  
 /**
  * Site
- *
- * @ORM\Table(name="site")
- * @ORM\Entity(repositoryClass="DropstockBundle\Repository\SiteRepository")
  */
 class Site
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="url", type="text")
      */
     private $url;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="software", type="string", length=255)
      */
-    private $software;
+    private $platform;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=255)
      */
     private $status;
+
+    /**
+     * @var \DateTime
+     */
+    private $checked;
+
+    /**
+     * @var string
+     */
+    private $token;
 
 
     /**
@@ -107,26 +102,26 @@ class Site
     }
 
     /**
-     * Set software
+     * Set platform
      *
-     * @param string $software
+     * @param string $platform
      * @return Site
      */
-    public function setSoftware($software)
+    public function setPlatform($platform)
     {
-        $this->software = $software;
+        $this->platform = $platform;
 
         return $this;
     }
 
     /**
-     * Get software
+     * Get platform
      *
      * @return string 
      */
-    public function getSoftware()
+    public function getPlatform()
     {
-        return $this->software;
+        return $this->platform;
     }
 
     /**
@@ -150,5 +145,64 @@ class Site
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set checked
+     *
+     * @param \DateTime $checked
+     * @return Site
+     */
+    public function setChecked($checked)
+    {
+        $this->checked = $checked;
+
+        return $this;
+    }
+
+    /**
+     * Get checked
+     *
+     * @return \DateTime 
+     */
+    public function getChecked()
+    {
+        return $this->checked;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     * @return Site
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string 
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+  /**
+   *  Set values
+   **/
+  public function set($key, $val)
+  {
+    $this->{$key} = $val;
+  }
+
+  public function setDefault(){
+    $datetime = new \DateTime();
+      $this->setChecked($datetime);
     }
 }

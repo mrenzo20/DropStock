@@ -3,7 +3,6 @@
 namespace DropstockBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,26 +33,6 @@ class SiteController extends Controller
         ));
     }
 
-  /**
-     * Lists all Site entities.
-     *
-     * @Route("/cron", name="site_cron")
-     * @Method("GET")
-     */
-    public function cronAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $sites = $em->getRepository('DropstockBundle:Site')->findAll();
-        foreach($sites as $site){
-          $this->checkAction($site);
-        }
-
-        return $this->render('site/index.html.twig', array(
-            'sites' => $sites,
-        ));
-    }
-
     /**
      * Creates a new Site entity.
      *
@@ -77,37 +56,6 @@ class SiteController extends Controller
         return $this->render('site/new.html.twig', array(
             'site' => $site,
             'form' => $form->createView(),
-        ));
-    }
-  /**
-     * Registers a new Site entity.
-     *
-     * @Route("/register", name="site_register")
-     * @Method({"GET", "POST"})
-     */
-    public function registerAction(Request $request)
-    {
-      $site = new Site();
-      $site->setDefault();
-      $values = $request->query->all();
-      foreach($values as $key => $val){
-        $site->set($key,$val);
-      }
-
-        
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($site);
-      $em->flush();
-
-      return $this->redirectToRoute('site_show', array('id' => $site->getId()));
-        
-      // return new Response('hola',200);//'hola';
-      $values = $request->request->all();
-      var_dump($values);
-      
-      var_dump($values);
-      return new Response($request,200);
-        return $this->render('base.html.twig', array(
         ));
     }
 
@@ -199,19 +147,11 @@ class SiteController extends Controller
      */
    public function checkAction(Site $site)
     {
-      $checked = false;
+        $deleteForm = $this->createDeleteForm($site);
         //obtindre el json
         if($site->getUrl()){
           $url = $site->getUrl();
-          try{
-            $contents = file_get_contents($url);
-            if($contents){
-              $checked = true;
-            }
-          }
-          catch(Exception $e){
-            $checked = false;
-          }
+          $contents = file_get_contents($url);
           $site->json = $contents;
           $site->json_decoded = json_decode($site->json);
           $site->dump = '';
@@ -219,10 +159,8 @@ class SiteController extends Controller
 
 
         //guardar valors del json
-        if($checked){
-          $now = \date('Y-m-d H:i:s');
+        if($site->json_decoded){
           $site->setPlatform($site->json_decoded->software);
-          $site->setStatus('checked '.$now);
           $site->dump = '';//print_r($site->json_decoded,'true');
           $em = $this->getDoctrine()->getManager();
           $em->persist($site);
@@ -232,6 +170,33 @@ class SiteController extends Controller
         
         return $this->render('site/check.html.twig', array(
             'site' => $site,
+        ));
+    }
+
+
+  /**
+   * Registers a new Site entity.
+   *
+   * @Route("/register", name="site_register")
+   * @Method({"GET", "POST"})
+   */
+    public function registerAction(Request $request)
+    {
+      $site = new Site();
+        $form = $this->createForm('DropstockBundle\Form\SiteType', $site);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($site);
+            $em->flush();
+
+            return $this->redirectToRoute('site_show', array('id' => $site->getId()));
+        }
+
+        return $this->render('site/new.html.twig', array(
+            'site' => $site,
+            'form' => $form->createView(),
         ));
     }
 }
