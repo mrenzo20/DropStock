@@ -18,12 +18,26 @@
                 <td>{{ site.url }}</td>
             </tr>
             <tr>
-                <th>Software</th>
+                <th>Platform</th>
                 <td>{{ site.platform }}</td>
             </tr>
             <tr>
                 <th>Status</th>
                 <td>{{ site.status }}</td>
+            </tr>
+	    <tr>
+                <th>Checked</th>
+                <td></td>
+            </tr>
+	    <tr>
+                <th>Modules</th>
+                <td>
+		  <ul>
+		    {% for module in site.modules %}
+		    <li>{{ module|e }}</li>
+		    {% endfor %}
+		  </ul>
+		</td>
             </tr>
         </tbody>
     </table>
