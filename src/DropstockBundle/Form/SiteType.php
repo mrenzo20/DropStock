@@ -5,6 +5,8 @@ namespace DropstockBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 class SiteType extends AbstractType
 {
@@ -21,6 +23,18 @@ class SiteType extends AbstractType
       ->add('status')
       ->add('checked')
       ->add('token')
+      ->add('crypt')
+      ->add('modules', CollectionType::class, array(
+              // each entry in the array will be an "email" field
+              'entry_type'   => TextType::class,
+              // these options are passed to each "email" type
+              'entry_options'  => array(
+                'required'  => true,
+                'attr'      => array('class' => 'email-box')
+              ),
+            )
+      )
+      ->add('data')
       ;
   }
   

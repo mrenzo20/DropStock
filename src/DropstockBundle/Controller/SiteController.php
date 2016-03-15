@@ -214,7 +214,10 @@ class SiteController extends Controller
           }
           $site->json = $contents;
           $site->json_decoded = json_decode($site->json);
+          // print '<pre>'.print_r($site->json_decoded,true).'</pre>';
           $site->dump = '';
+
+          
         }
 
 
@@ -224,6 +227,17 @@ class SiteController extends Controller
           $site->setPlatform($site->json_decoded->software);
           $site->setStatus('checked '.$now);
           $site->dump = '';//print_r($site->json_decoded,'true');
+
+          
+          // info dels moduls
+          $modules = array();
+          foreach($site->json_decoded->modules_enabled as $module => $info){
+            $modules[] = $module.' '.$info->info->version. ' '. $info->schema_version;
+          }
+          // print '<pre>'.print_r($modules,true).'</pre>';
+          $site->setModules($modules);
+
+          
           $em = $this->getDoctrine()->getManager();
           $em->persist($site);
           $em->flush();
@@ -232,6 +246,41 @@ class SiteController extends Controller
         
         return $this->render('site/check.html.twig', array(
             'site' => $site,
+        ));
+    }
+
+
+  /**
+     * Lists all Site entities.
+     *
+     * @Route("/contains/{partialname}", name="site_contains")
+     * @Method("GET")
+     */
+    public function containsAction($partialname)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        // print_r($partialname);
+        $sites = $em->getRepository('DropstockBundle:Site')->findAll();
+        // var_dump($sites);
+        $contains = array();
+        foreach($sites as $site){
+          $modules = $site->getModules();
+          
+          $m_array = preg_grep('/.*'.$partialname.'.*/', $modules);
+          // print '<pre>'.print_r($m_array,true).'</pre>';
+          if(count($m_array)>1){
+            $site->modules_match = $m_array;
+            // var_dump($modules);
+            $contains[] = $site;
+            // print '<pre>'.print_r($modules,true).'</pre>';
+          }
+          // var_dump($modules);
+        }
+
+        $sites = $contains;
+        return $this->render('site/modules.html.twig', array(
+            'sites' => $contains,
         ));
     }
 }

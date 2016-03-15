@@ -3,14 +3,14 @@
 namespace DropstockBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-  
+
 /**
  * Site
  */
 class Site
 {
     /**
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -43,6 +43,21 @@ class Site
      * @var string
      */
     private $token;
+
+    /**
+     * @var string
+     */
+    private $crypt;
+
+    /**
+     * @var array
+     */
+    private $modules;
+
+    /**
+     * @var array
+     */
+    private $data;
 
 
     /**
@@ -193,6 +208,76 @@ class Site
         return $this->token;
     }
 
+    /**
+     * Set crypt
+     *
+     * @param string $crypt
+     * @return Site
+     */
+    public function setCrypt($crypt)
+    {
+        $this->crypt = $crypt;
+
+        return $this;
+    }
+
+    /**
+     * Get crypt
+     *
+     * @return string 
+     */
+    public function getCrypt()
+    {
+        return $this->crypt;
+    }
+
+    /**
+     * Set modules
+     *
+     * @param array $modules
+     * @return Site
+     */
+    public function setModules($modules)
+    {
+        $this->modules = $modules;
+
+        return $this;
+    }
+
+    /**
+     * Get modules
+     *
+     * @return array 
+     */
+    public function getModules()
+    {
+        return $this->modules;
+    }
+
+    /**
+     * Set data
+     *
+     * @param array $data
+     * @return Site
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return array 
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+
   /**
    *  Set values
    **/
@@ -203,6 +288,7 @@ class Site
 
   public function setDefault(){
     $datetime = new \DateTime();
-      $this->setChecked($datetime);
-    }
+    $this->setChecked($datetime);
+  }
+
 }
