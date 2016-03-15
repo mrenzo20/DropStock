@@ -17,26 +17,12 @@ DropstockBundle\Entity\Site:
         platform:
             type: string
             length: 255
-            nullable: true
         status:
             type: string
             length: 255
-            nullable: true
         checked:
             type: datetime
-            nullable: true
         token:
             type: string
             length: 255
-            nullable: true
-        crypt:
-            type: string
-            length: 255
-            nullable: true
-        modules:
-            type: array
-            nullable: true
-        data:
-            type: json_array
-            nullable: true
     lifecycleCallbacks: {  }
