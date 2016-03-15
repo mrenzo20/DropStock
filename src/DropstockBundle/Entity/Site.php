@@ -276,4 +276,19 @@ class Site
     {
         return $this->data;
     }
+
+
+  /**
+   *  Set values
+   **/
+  public function set($key, $val)
+  {
+    $this->{$key} = $val;
+  }
+
+  public function setDefault(){
+    $datetime = new \DateTime();
+    $this->setChecked($datetime);
+  }
+
 }
