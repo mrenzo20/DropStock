@@ -25,9 +25,7 @@ class SiteType extends AbstractType
       ->add('token')
       ->add('crypt')
       ->add('modules', CollectionType::class, array(
-              // each entry in the array will be an "email" field
               'entry_type'   => TextType::class,
-              // these options are passed to each "email" type
               'entry_options'  => array(
                 'required'  => true,
                 'attr'      => array('class' => 'email-box')
@@ -36,6 +34,7 @@ class SiteType extends AbstractType
       )
       ->add('data')
       ;
+
   }
   
   /**
