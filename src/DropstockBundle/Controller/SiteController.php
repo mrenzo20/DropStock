@@ -103,9 +103,9 @@ class SiteController extends Controller
         
       // return new Response('hola',200);//'hola';
       $values = $request->request->all();
-      var_dump($values);
+      // var_dump($values);
       
-      var_dump($values);
+      // var_dump($values);
       return new Response($request,200);
         return $this->render('base.html.twig', array(
         ));
@@ -202,22 +202,31 @@ class SiteController extends Controller
       $checked = false;
         //obtindre el json
         if($site->getUrl()){
+          //http://dev.www.emfasi.com/dropstock.php?dropsite=http://127.0.0.1:8000/site/1&token=mytoken
           $url = $site->getUrl();
+          
+          $params =  'dropsite='.urlencode('http://'.$_SERVER['HTTP_HOST'].'/site/'.$site->getId().'');
+          $params .= '&token='.urlencode($site->getToken());
           try{
-            $contents = file_get_contents($url);
+            $full_url = $url.'?'.$params;
+            // var_dump($full_url);die();
+           
+            $contents = file_get_contents($full_url);
+            // var_dump($contents);die();
             if($contents){
               $checked = true;
             }
+            // var_dump($contents);
+            // $decrypted = $site->encrypt_decrypt('decrypt',$contents, $site->getCrypt());
+            $site->json = $decrypted;
+            $site->json_decoded = json_decode($site->json);
+            // print '<pre>'.print_r($site->json_decoded,true).'</pre>';
+            $site->dump = '';
           }
           catch(Exception $e){
             $checked = false;
+            die($e->getMessage());
           }
-          $site->json = $contents;
-          $site->json_decoded = json_decode($site->json);
-          // print '<pre>'.print_r($site->json_decoded,true).'</pre>';
-          $site->dump = '';
-
-          
         }
 
 
@@ -265,9 +274,12 @@ class SiteController extends Controller
         // var_dump($sites);
         $contains = array();
         foreach($sites as $site){
-          $modules = $site->getModules();
-          
-          $m_array = preg_grep('/.*'.$partialname.'.*/', $modules);
+          $modules = $site->getModules();;
+          // var_dump($partialname); 
+          $partial = str_replace("_","_",trim($partialname));
+          $pattern = "/$partial/";
+          // var_dump($pattern);
+          $m_array = preg_grep($pattern, $modules);
           // print '<pre>'.print_r($m_array,true).'</pre>';
           if(count($m_array)>1){
             $site->modules_match = $m_array;
@@ -283,4 +295,75 @@ class SiteController extends Controller
             'sites' => $contains,
         ));
     }
+
+
+  /**
+     * Displays a form to edit an existing Site entity.
+     *
+     * @Route("/{id}/token", name="site_token")
+     * @Method({"GET", "POST"})
+     */
+    public function tokenAction(Request $request, Site $site)
+    {
+      // return new Response('hola',200);//'hola';$site->getToken();
+      return new Response($site->getToken(),200);//'hola';$site->getToken();
+    }
+
+  /**
+     * Displays a form to edit an existing Site entity.
+     *
+     * @Route("/{id}/encrypt-token", name="site_encrypt-token")
+     * @Method({"GET", "POST"})
+     */
+    public function encrypttokenAction(Request $request, Site $site)
+    {
+      // var_dump($request);
+      $values = $request->query->all();
+      if(isset($values['encrypt-token'])){
+        $em = $this->getDoctrine()->getManager();
+        $site->setCrypt($values['encrypt-token']);
+        $em->persist($site);
+        $em->flush();
+      }
+      return new Response($site->getCrypt().'',200);
+    }
+
+
+  /**
+   * simple method to encrypt or decrypt a plain text string
+   * initialization vector(IV) has to be the same when encrypting and decrypting
+   * PHP 5.4.9
+   *
+   * this is a beginners template for simple encryption decryption
+   * before using this in production environments, please read about encryption
+   *
+   * @param string $action: can be 'encrypt' or 'decrypt'
+   * @param string $string: string to encrypt or decrypt
+   *
+   * @return string
+   */
+  public function encrypt_decrypt($action, $string, $secret) {
+    $output = false;
+
+    $encrypt_method = "AES-256-CBC";
+    $secret_key = $secret;
+    $secret_iv = ''; //salt
+
+    // hash
+    $key = hash('sha256', $secret_key);
+
+    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+    $iv = substr(hash('sha256', $secret_iv), 0, 16);
+
+    if( $action == 'encrypt' ) {
+      $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
+      $output = base64_encode($output);
+    }
+    else if( $action == 'decrypt' ){
+      $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+    }
+
+    return $output;
+  }
+  
 }
