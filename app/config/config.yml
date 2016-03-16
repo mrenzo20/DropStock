@@ -84,6 +84,9 @@ assetic:
     filters:
         cssrewrite: ~
     assets:
+        mfs_css:
+            inputs:
+                - %kernel.root_dir%/../app/Resources/css/mfs.css
         bootstrap_js:
             inputs:
                 - %kernel.root_dir%/../vendor/twitter/bootstrap/dist/js/bootstrap.js
