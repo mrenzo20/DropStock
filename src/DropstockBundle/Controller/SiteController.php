@@ -217,7 +217,7 @@ class SiteController extends Controller
               $checked = true;
             }
             // var_dump($contents);
-            // $decrypted = $site->encrypt_decrypt('decrypt',$contents, $site->getCrypt());
+            $decrypted = $site->encrypt_decrypt('decrypt',$contents, $site->getCrypt());
             $site->json = $decrypted;
             $site->json_decoded = json_decode($site->json);
             // print '<pre>'.print_r($site->json_decoded,true).'</pre>';
