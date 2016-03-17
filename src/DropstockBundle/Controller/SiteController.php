@@ -302,7 +302,7 @@ class SiteController extends Controller
       $dev_environment = '';
       $pos = strpos($_SERVER['HTTP_HOST'], 'emfasi.local');
       if($pos !== false){
-        $dev_environment = '/app_dev.php';
+        // $dev_environment = '/app_dev.php';
       }
       $get = array(
         'dropsite' => 'http://'.$_SERVER['HTTP_HOST'].$dev_environment.'/site/'.$site->getId().''.'|'.($site->getToken()),
