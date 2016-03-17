@@ -10,12 +10,11 @@
 /vendor/
 /bin/
 /composer.phar
-composer.lock
+/composer.lock
 .#*
 .#*
 \#*
 *~
-
 cache/*
 dump.sql
 info.json
