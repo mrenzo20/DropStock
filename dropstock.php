@@ -18,6 +18,20 @@
  * Root directory of Drupal installation.
  */
 
+$status = 'ok';
+try
+{
+  define('DRUPAL_ROOT', getcwd());
+
+  require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  // menu_execute_active_handler();
+}
+catch(Exception $e)
+{
+  $status = 'ko';
+}
+
 
 
 //identificar el origen de la crida
@@ -32,7 +46,8 @@ if(!isset($_REQUEST['token'])){
   $_REQUEST['token'] = $exploded_site[1];
 }
 
-$dropstock_token = file_get_contents($site.'/token');
+// $dropstock_token = file_get_contents($site.'/token');
+$dropstock_token = curl_get($site.'/token',array(),array());
 $dtoken = variable_get('dropstock_token', 'not-set');
 $token_set = true;
 if($dtoken == 'not-set'){
@@ -62,20 +77,7 @@ if($dropstock_token != $provided_token){
 //els tokens son iguals, continuem.
 
 
-$status = 'ok';
-try
-{
 
-  define('DRUPAL_ROOT', getcwd());
-
-  require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  // menu_execute_active_handler();
-}
-catch(Exception $e)
-{
-  $status = 'ko';
-}
 
 variable_set('dropstock_token', $dropstock_token);
 $cypher_token = variable_get('dropstock_cypher_token', 'not-set');
@@ -87,7 +89,12 @@ if($cypher_token == 'not-set'){
 }
 
 if(!$cypher_token_set){
-  $setted = file_get_contents($site.'/encrypt-token?encrypt-token='.$cypher_token);
+  // $setted = file_get_contents($site.'/encrypt-token?encrypt-token='.$cypher_token);
+  $get = array(
+    'encrypt-token' => $cypher_token,
+  );
+  $setted = curl_get($site.'/encrypt-token',$get, array());
+
   if($setted){
     variable_set('dropstock_cypher_token', $cypher_token);
   }
@@ -154,3 +161,33 @@ function encrypt_decrypt($action, $string, $secret) {
 
   return $output;
 }
+
+
+/**
+ * Send a GET requst using cURL
+ * @param string $url to request
+ * @param array $get values to send
+ * @param array $options for cURL
+ * @return string
+ */
+function curl_get($url, array $get = NULL, array $options = array())
+{
+
+  // $result =file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
+  $defaults = array(
+    CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+    CURLOPT_HEADER => 0,
+    CURLOPT_RETURNTRANSFER => TRUE,
+    CURLOPT_TIMEOUT => 4
+  );
+   
+  $ch = curl_init();
+  curl_setopt_array($ch, ($options + $defaults));
+  $result = curl_exec($ch) ;
+  if( !$result )
+  {
+    trigger_error(curl_error($ch));
+  }
+  curl_close($ch);
+  return $result;
+} 

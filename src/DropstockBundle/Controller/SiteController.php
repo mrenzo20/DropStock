@@ -87,22 +87,22 @@ function curl_post($url, array $post = NULL, array $options = array())
 function curl_get($url, array $get = NULL, array $options = array())
 {
 
-  $result =file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
-  //     $defaults = array(
-  //         CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
-  //         CURLOPT_HEADER => 0,
-  //         CURLOPT_RETURNTRANSFER => TRUE,
-  //         CURLOPT_TIMEOUT => 4
-  //     );
+  // $result =file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
+  $defaults = array(
+    CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+    CURLOPT_HEADER => 0,
+    CURLOPT_RETURNTRANSFER => TRUE,
+    CURLOPT_TIMEOUT => 4
+  );
    
-  //     $ch = curl_init();
-  //     curl_setopt_array($ch, ($options + $defaults));
-  //     $result = curl_exec($ch) ;
-  //     if( !$result )
-  //     {
-  //         trigger_error(curl_error($ch));
-  //     }
-  //     curl_close($ch);
+  $ch = curl_init();
+  curl_setopt_array($ch, ($options + $defaults));
+  $result = curl_exec($ch) ;
+  if( !$result )
+  {
+    trigger_error(curl_error($ch));
+  }
+  curl_close($ch);
   return $result;
 } 
 
@@ -313,8 +313,7 @@ class SiteController extends Controller
           
           CURLOPT_CONNECTTIMEOUT=> 2,
           CURLOPT_RETURNTRANSFER=> 1,
-          CURLOPT_TIMEOUT=> 4,
-          CURLOPT_USERAGENT=> 'Your application name',
+          CURLOPT_USERAGENT=> 'Dropstock',
         );
 
         $contents = curl_get($url,$get,$options) ;
