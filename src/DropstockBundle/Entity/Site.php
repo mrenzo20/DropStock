@@ -290,5 +290,4 @@ class Site
     $datetime = new \DateTime();
     $this->setChecked($datetime);
   }
-
 }
