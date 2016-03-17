@@ -31,6 +31,7 @@ security:
         - { path: ^/site/[0-9]+/token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/site/[0-9]+/encrypt-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/site/[0-9]+/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/site/$, role: ROLE_ADMIN }
         - { path: ^/site/[0-9]+, role: ROLE_ADMIN }
         - { path: ^/site/[0-9]+/edit, role: ROLE_ADMIN }
         - { path: ^/site/[0-9]+/show, role: ROLE_ADMIN }
