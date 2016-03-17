@@ -355,7 +355,7 @@ class SiteController extends Controller
       $em->flush();
     }
         
-        
+    return new Response($decrypted.$contents,200);
     return $this->render('site/check.html.twig', array(
                            'site' => $site,
                          ));
