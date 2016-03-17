@@ -24,16 +24,16 @@ class SiteType extends AbstractType
       ->add('checked')
       ->add('token')
       ->add('crypt')
-      ->add('modules',
-            CollectionType::class,
-            array(
-              'entry_type'   => TextType::class,
-              'entry_options'  => array(
-                'required'  => true,
-                'attr'      => array('class' => 'email-box')
-              ),
-            )
-      )
+      // ->add('modules',
+      //       CollectionType::class,
+      //       array(
+      //         'entry_type'   => TextType::class,
+      //         'entry_options'  => array(
+      //           'required'  => true,
+      //           'attr'      => array('class' => 'email-box')
+      //         ),
+      //       )
+      // )
       
       ->add('data')
       ;
