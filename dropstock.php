@@ -118,21 +118,36 @@ function encrypt_decrypt($action, $string, $secret) {
   $secret_iv = '1234'; //salt
 
   // hash
-  $key = hash('sha256', $secret_key);
+  $key = substr(hash('sha256', $secret_key), 0, 32);
 
   // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
   $iv = substr(hash('sha256', $secret_iv), 0, 16);
 
   if( $action == 'encrypt' ) {
-    $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-    $output = base64_encode($output);
+    $output = encrypt($string, $key);
   }
   else if( $action == 'decrypt' ){
-    $output = openssl_decrypt(base64_decode($string), $encrypt_method, $key, 0, $iv);
+    $output = decrypt($string, $key);
   }
 
   return $output;
 }
+
+  function encrypt($value,$key){
+    $text = $value;
+    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+    $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+    $crypttext = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $text, MCRYPT_MODE_ECB, $iv);
+    return $crypttext;
+  }
+
+    function decrypt($value,$key){
+      $crypttext = $value;
+      $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+      $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+      $decrypttext = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $crypttext, MCRYPT_MODE_ECB, $iv);
+      return trim($decrypttext);
+    }
 
 
 /**
