@@ -123,7 +123,6 @@ function curl_get($url, array $get = NULL, array $options = array())
   curl_setopt_array($ch, ($options + $defaults));
   $result = curl_exec($ch) ;
   $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-  var_dump('http code',$httpCode);
   if( !$result )
   {
     trigger_error(curl_error($ch));
@@ -336,7 +335,7 @@ class SiteController extends Controller
 
 
     //get json info
-    $httpCode = 0;
+    $httpCode = 'host?';
     if($site->getUrl()){
       $url = $site->getUrl();
 
