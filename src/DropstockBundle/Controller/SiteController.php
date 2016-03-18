@@ -431,7 +431,10 @@ class SiteController extends Controller
     $sites = $em->getRepository('DropstockBundle:Site')->findAll();
     $contains = array();
     foreach($sites as $site){
-      $modules = $site->getModules();;
+      $modules = $site->getModules();
+      if($modules === null){
+        continue;
+      }
       $partial = str_replace("_","_",trim($partialname));
       $pattern = "/$partial/";
       $m_array = preg_grep($pattern, $modules);
