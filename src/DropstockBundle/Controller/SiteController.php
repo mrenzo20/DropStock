@@ -54,6 +54,15 @@ function encrypt($value,$key){
   return $crypttext;
 }
 
+
+
+function isJson($string) {
+ json_decode($string);
+ return (json_last_error() == JSON_ERROR_NONE);
+}
+
+
+
 function decrypt($value,$key){
   $crypttext = $value;
   $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
@@ -361,8 +370,13 @@ class SiteController extends Controller
     $decrypted = 'not checked';
     if($checked){
       $now = \date('Y-m-d H:i:s');
-      $decrypted = encrypt_decrypt('decrypt',$contents, $site->getCrypt());
-      $site->json = $decrypted;
+      if(isJson($contents)){
+        $site->json = $contents;
+      }
+      else{
+        $decrypted = encrypt_decrypt('decrypt',$contents, $site->getCrypt());
+        $site->json = $decrypted;
+      }
       $site->json_decoded = json_decode($site->json);
       $site->setPlatform($site->json_decoded->software);
       $site->setStatus('checked '.$now);
