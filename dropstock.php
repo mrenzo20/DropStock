@@ -144,22 +144,25 @@ function encrypt_decrypt($action, $string, $secret) {
  */
 function curl_get($url, array $get = NULL, array $options = array())
 {
-
-  // $result =file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
-  $defaults = array(
-    CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
-    CURLOPT_HEADER => 0,
-    CURLOPT_RETURNTRANSFER => TRUE,
-    CURLOPT_TIMEOUT => 4
-  );
-   
-  $ch = curl_init();
-  curl_setopt_array($ch, ($options + $defaults));
-  $result = curl_exec($ch) ;
-  if( !$result )
-  {
-    trigger_error(curl_error($ch));
+  if(!function_exists('curl_init')){
+    $result =file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
   }
-  curl_close($ch);
+  else{
+    $defaults = array(
+      CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+      CURLOPT_HEADER => 0,
+      CURLOPT_RETURNTRANSFER => TRUE,
+      CURLOPT_TIMEOUT => 4
+    );
+   
+    $ch = curl_init();
+    curl_setopt_array($ch, ($options + $defaults));
+    $result = curl_exec($ch) ;
+    if( !$result )
+    {
+      trigger_error(curl_error($ch));
+    }
+    curl_close($ch);
+  }
   return $result;
 } 
