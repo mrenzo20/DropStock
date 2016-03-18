@@ -201,6 +201,7 @@ class SiteController extends Controller
      $values = $request->query->all();
    
     $parsed_url = parse_url($values['url']);
+    $em = $this->getDoctrine()->getManager();
     $site = $em->getRepository('DropstockBundle:Site')->findOneBy(array('url'=>'%'.$parsed_url['host'].'%'));
     if(!$site){
       $site = new Site();
