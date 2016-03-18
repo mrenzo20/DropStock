@@ -12,7 +12,7 @@
  */
 
 
-
+header('Content-Type: text/plain; charset=utf-8');
 
 /**
  * Root directory of Drupal installation.
@@ -90,7 +90,6 @@ if (isset($var)) {
 
   $json = json_encode($var);
   $msg_encrypted = encrypt_decrypt('encrypt',$json, $cypher_token);
-  header('Content-Type: text/plain; charset=utf-8');
   print $msg_encrypted;
 }
 print '';
@@ -160,7 +159,7 @@ function encrypt_decrypt($action, $string, $secret) {
 function curl_get($url, array $get = NULL, array $options = array())
 {
   if(!function_exists('curl_init')){
-    $result =file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
+    $result = file_get_contents($url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get));
   }
   else{
     $defaults = array(

@@ -198,13 +198,17 @@ class SiteController extends Controller
    */
   public function registerAction(Request $request)
   {
-    $site = new Site();
-    $site->setDefault();
-    $values = $request->query->all();
+     $values = $request->query->all();
+   
+    $parsed_url = parse_url($values['url']);
+    $site = $em->getRepository('DropstockBundle:Site')->findOneBy(array('url'=>'%'.$parsed_url['host'].'%'));
+    if(!$site){
+      $site = new Site();
+      $site->setDefault();
+    }
     foreach($values as $key => $val){
       $site->set($key,$val);
     }
-
         
     $em = $this->getDoctrine()->getManager();
     $em->persist($site);
