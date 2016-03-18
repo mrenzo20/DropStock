@@ -386,7 +386,7 @@ class SiteController extends Controller
       if(!isset($site->json_decoded->status)){
         $site->json_decoded->status = $site->json;
       }
-       $site->setStatus('checked '.$now. .' ' . $httpCode.' code|contents:'.$site->json_decoded->status.'|');
+       $site->setStatus('checked '.$now. ' ' . $httpCode.' code|contents:'.$site->json_decoded->status.'|');
       $site->dump = '';//print_r($site->json_decoded,'true');
 
           
