@@ -380,7 +380,10 @@ class SiteController extends Controller
       }
       $site->json_decoded = json_decode($site->json);
       $site->setPlatform($site->json_decoded->software);
-      $site->setStatus('checked '.$now);
+      if(!isset($site->json_decoded->status)){
+        $site->json_decoded->status = 'ko';
+      }
+      $site->setStatus('checked '.$now. ' ' . $site->json_decoded->status);
       $site->dump = '';//print_r($site->json_decoded,'true');
 
           
