@@ -296,6 +296,11 @@ class SiteController extends Controller
     $checked = false;
     $contents = '';
     //obtindre el json
+    $site->setToken(rand(0,9999));
+    $site->setCrypt(rand(0,9999));
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($site);
+    $em->flush();
     if($site->getUrl()){
       $url = $site->getUrl();
 
@@ -353,7 +358,13 @@ class SiteController extends Controller
       $em->persist($site);
       $em->flush();
     }
-        
+
+    $site->setToken(rand(0,9999));
+    $site->setCrypt(rand(0,9999));
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($site);
+    $em->flush();
+    
     return new Response($decrypted.$contents,200);
     return $this->render('site/check.html.twig', array(
                            'site' => $site,

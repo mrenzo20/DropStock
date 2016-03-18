@@ -46,25 +46,22 @@ if(!isset($_REQUEST['token'])){
   $_REQUEST['token'] = $exploded_site[1];
 }
 
-// $dropstock_token = file_get_contents($site.'/token');
+//agafar els tokens de dropstock
 $dropstock_token = curl_get($site.'/token',array(),array());
-$dtoken = variable_get('dropstock_token', 'not-set');
-$token_set = true;
-if($dtoken == 'not-set'){
-  $token_set = false;
+if($dropstock_token){
+  variable_set('dropstock_token', $dropstock_token);
 }
-if(!$token_set && $dropstock_token){
-  variable_get('dropstock_token', $dropstock_token);
+$cypher_token = curl_get($site.'/encrypt-token',array(), array());
+if($cypher_token){
+  variable_set('dropstock_cypher_token', $cypher_token);
 }
 
+
 //comprovar el token
-$provided_token = $_REQUEST['token'];
 if(!isset($_REQUEST['token'])){
   die('No token provided');
 }
-
-//agafar el token de dropstock
-
+$provided_token = $_REQUEST['token'];
 
 
 if(!$dropstock_token){
@@ -77,31 +74,8 @@ if($dropstock_token != $provided_token){
 //els tokens son iguals, continuem.
 
 
-
-
-variable_set('dropstock_token', $dropstock_token);
-$cypher_token = variable_get('dropstock_cypher_token', 'not-set');
-$cypher_token_set = true;
-if($cypher_token == 'not-set'){
-  $cypher_token = rand(0,9999);
-  $cypher_token_set = false;
-
-}
-
-if(!$cypher_token_set){
-  // $setted = file_get_contents($site.'/encrypt-token?encrypt-token='.$cypher_token);
-  $get = array(
-    'encrypt-token' => $cypher_token,
-  );
-  $setted = curl_get($site.'/encrypt-token',$get, array());
-
-  if($setted){
-    variable_set('dropstock_cypher_token', $cypher_token);
-  }
-}
-
 $info = array(
-  'name' => 'emfasi.com',
+  'name' => '',
   'software' => 'Drupal '.VERSION,
   'status' => $status,
   'modules' => module_list(),
@@ -116,8 +90,6 @@ if (isset($var)) {
 
   $json = json_encode($var);
   $msg_encrypted = encrypt_decrypt('encrypt',$json, $cypher_token);
-  $msg_decrypted = encrypt_decrypt('decrypt', $msg_encrypted, $cypher_token);
-
   header('Content-Type: text/plain; charset=utf-8');
   print $msg_encrypted;
 }
