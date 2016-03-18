@@ -122,12 +122,14 @@ function curl_get($url, array $get = NULL, array $options = array())
   $ch = curl_init();
   curl_setopt_array($ch, ($options + $defaults));
   $result = curl_exec($ch) ;
+  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  var_dump('http code',$httpCode);
   if( !$result )
   {
     trigger_error(curl_error($ch));
   }
   curl_close($ch);
-  return $result;
+  return array($result,$httpCode);
 } 
 
 /**
@@ -334,6 +336,7 @@ class SiteController extends Controller
 
 
     //get json info
+    $httpCode = 0;
     if($site->getUrl()){
       $url = $site->getUrl();
 
@@ -354,7 +357,7 @@ class SiteController extends Controller
           CURLOPT_USERAGENT=> 'Dropstock',
         );
 
-        $contents = curl_get($url,$get,$options) ;
+        list($contents,$httpCode) = curl_get($url,$get,$options) ;
         if($contents){
           $checked = true;
         }
@@ -368,7 +371,7 @@ class SiteController extends Controller
 
     //guardar valors del json
     $decrypted = 'not checked';
-    $site->setStatus('404? '.$contents);
+    $site->setStatus($httpCode.' code|contents:'.$contents.'|');
     if($checked){
       $now = \date('Y-m-d H:i:s');
       if(isJson($contents)){
