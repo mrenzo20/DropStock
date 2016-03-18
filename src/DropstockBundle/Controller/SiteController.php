@@ -361,13 +361,14 @@ class SiteController extends Controller
       }
       catch(Exception $e){
         $checked = false;
-        die($e->getMessage());
+        $site->setStatus('error '.$e->getMessage());
       }
     }
 
 
     //guardar valors del json
     $decrypted = 'not checked';
+    $site->setStatus('404?');
     if($checked){
       $now = \date('Y-m-d H:i:s');
       if(isJson($contents)){
