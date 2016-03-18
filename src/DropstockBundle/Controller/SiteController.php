@@ -368,7 +368,7 @@ class SiteController extends Controller
 
     //guardar valors del json
     $decrypted = 'not checked';
-    $site->setStatus('404?');
+    $site->setStatus('404? '.$contents);
     if($checked){
       $now = \date('Y-m-d H:i:s');
       if(isJson($contents)){
